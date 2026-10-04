@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Community AI</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    background:#f4f7fb;
+    color:#222;
+}
+header{
+    background:#07579e;
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+.container{
+    width:90%;
+    max-width:1000px;
+    margin:25px auto;
+}
+.card{
+    background:white;
+    padding:22px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px #ccc;
+}
+textarea{
+    width:100%;
+    height:100px;
+    box-sizing:border-box;
+    padding:12px;
+}
+input,button{
+    padding:10px;
+    margin:7px 0;
+}
+button{
+    background:#07579e;
+    color:white;
+    border:0;
+    border-radius:6px;
+    cursor:pointer;
+}
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+.result{
+    background:#eef8ee;
+    padding:15px;
+    border-radius:10px;
+}
+.meter{
+    width:100%;
+    height:25px;
+    background:#ddd;
+    border-radius:15px;
+    overflow:hidden;
+}
+.meterFill{
+    height:100%;
+    width:0%;
+    background:#e53935;
+}
+.map{
+    height:220px;
+    background:#dce9d8;
+    position:relative;
+    border-radius:10px;
+}
+.pin{
+    position:absolute;
+    font-size:25px;
+}
+.bar{
+    background:#07579e;
+    color:white;
+    padding:8px;
+    margin:8px 0;
+    border-radius:5px;
+}
+img{
+    max-width:200px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🌍 Community AI</h1>
+<p>From Complaint to Prediction</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>📝 Report a Community Problem</h2>
+
+<textarea id="problem"
+placeholder="Example: Garbage is accumulating near the college gate"></textarea>
+
+<div class="grid">
+
+<div>
+<h3>📍 Location</h3>
+<input id="location" placeholder="Enter location">
+<br>
+<button onclick="getLocation()">Use My Location</button>
+</div>
+
+<div>
+<h3>📸 Photo Upload</h3>
+<input type="file" id="photo" accept="image/*" onchange="showPhoto()">
+<br>
+<img id="preview" style="display:none;">
+</div>
+
+</div>
+
+<br>
+<button onclick="analyze()">🤖 Analyze Problem</button>
+</div>
+
+
+<div class="card" id="result" style="display:none;">
+<h2>🤖 AI Analysis Result</h2>
+
+<p><b>Detected Problem:</b> <span id="type"></span></p>
+<p><b>Priority:</b> <span id="priority"></span></p>
+
+<p><b>📊 Risk Score:</b> <span id="score"></span>%</p>
+
+<div class="meter">
+<div class="meterFill" id="meter"></div>
+</div>
+
+<p><b>🔮 Prediction:</b> <span id="prediction"></span></p>
+
+<p><b>🚨 Suggested Action:</b> <span id="action"></span></p>
+
+<p><b>📝 Complaint ID:</b> <span id="complaint"></span></p>
+
+<p><b>Status:</b> 🟡 Submitted</p>
+</div>
+
+
+<div class="card">
+<h2>🗺️ Problem Hotspot Map</h2>
+
+<div class="map">
+<span class="pin" style="left:25%;top:30%;">📍</span>
+<span class="pin" style="left:55%;top:55%;">📍</span>
+<span class="pin" style="left:75%;top:25%;">📍</span>
+<span class="pin" style="left:40%;top:75%;">📍</span>
+</div>
+
+<p>🔴 Hotspots show areas with repeated community problems.</p>
+</div>
+
+
+<div class="card">
+<h2>📈 Community Dashboard</h2>
+
+<p>📌 Total Reports: <b>1,248</b></p>
+<p>🚨 High Priority: <b>86</b></p>
+<p>🔮 Predicted Hotspots: <b>14</b></p>
+<p>✅ Resolved: <b>82%</b></p>
+
+<h3>Problem Categories</h3>
+
+<div class="bar" style="width:80%;">Waste Management – 80%</div>
+<div class="bar" style="width:60%;">Road Problems – 60%</div>
+<div class="bar" style="width:45%;">Water Problems – 45%</div>
+<div class="bar" style="width:35%;">Street Lights – 35%</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+function getLocation(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(position){
+
+document.getElementById("location").value =
+"Latitude: " + position.coords.latitude.toFixed(4) +
+", Longitude: " + position.coords.longitude.toFixed(4);
+
+});
+
+}else{
+
+alert("Location is not supported.");
+
+}
+
+}
+
+
+function showPhoto(){
+
+let file=document.getElementById("photo").files[0];
+
+if(file){
+
+let preview=document.getElementById("preview");
+
+preview.src=URL.createObjectURL(file);
+
+preview.style.display="block";
+
+}
+
+}
+
+
+function analyze(){
+
+let problem=document.getElementById("problem").value.toLowerCase();
+
+if(problem.trim()===""){
+
+alert("Please enter a community problem.");
+
+return;
+
+}
+
+let type="General Community Problem";
+let priority="MEDIUM";
+let score=60;
+let prediction="Problem may continue if not resolved.";
+let action="Send the complaint to the concerned department.";
+
+if(problem.includes("garbage") ||
+problem.includes("waste") ||
+problem.includes("trash")){
+
+type="Waste Management";
+priority="HIGH";
+score=87;
+prediction="High probability of recurring waste problem.";
+action="Schedule immediate waste collection.";
+
+}
+
+else if(problem.includes("road") ||
+problem.includes("pothole")){
+
+type="Road Damage";
+priority="HIGH";
+score=82;
+prediction="Road problem may become more serious.";
+action="Schedule road inspection and repair.";
+
+}
+
+else if(problem.includes("water") ||
+problem.includes("leak")){
+
+type="Water Problem";
+priority="HIGH";
+score=85;
+prediction="Water issue may continue or increase.";
+action="Send water maintenance team.";
+
+}
+
+else if(problem.includes("light") ||
+problem.includes("streetlight")){
+
+type="Street Light";
+priority="MEDIUM";
+score=68;
+prediction="Repeated lighting problem is possible.";
+action="Send electrical maintenance team.";
+
+}
+
+document.getElementById("type").innerText=type;
+document.getElementById("priority").innerText=priority;
+document.getElementById("score").innerText=score;
+document.getElementById("prediction").innerText=prediction;
+document.getElementById("action").innerText=action;
+
+document.getElementById("meter").style.width=score+"%";
+
+document.getElementById("complaint").innerText=
+"CAI-" + Math.floor(100000 + Math.random()*900000);
+
+document.getElementById("result").style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>
